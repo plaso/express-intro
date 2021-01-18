@@ -1,0 +1,11 @@
+<div class="card-group">
+  {{#each users}}
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{this.name}}</h5>
+        <p class="card-text">{{this.aboutMe}}</p>
+        <a class="btn btn-primary" href="/users/{{this.id}}">See details</a>
+      </div>
+    </div>
+  {{/each}}
+</div>
