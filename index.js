@@ -27,6 +27,7 @@ function fakeMiddleware() {
 }
 
 app.use((req, res, next) => {
+  req.body.channel = 'web app'
   fakeMiddleware()
   next()
 })
@@ -58,14 +59,15 @@ app.get('/users/:id', (req, res, next) => {
 })
 
 app.post('/users', (req, res, next) => {
-  const { name, password } = req.body
+  console.log(req.body)
+  const { email, password } = req.body
 
-  if (name && password) {
+  if (email && password) {
     res.send('Data is correct')
   } else if (!password) {
     res.send('You need to fill the password field')
   } else {
-    res.send('Name is required')
+    res.send('Email is required')
   }
 })
 
