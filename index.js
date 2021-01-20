@@ -1,9 +1,16 @@
+require('dotenv').config()
+
 const express = require('express')
 const hbs = require('hbs')
 
 const users = require('./data/users')
 
 const app = express()
+
+//Configure body-parser
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 
 // Configure the public folder, for css js and .png
 app.use(express.static('public'))
@@ -12,6 +19,17 @@ app.use(express.static('public'))
 app.set('views', __dirname + '/views')
 app.set('view engine', 'hbs')
 hbs.registerPartials(__dirname + '/views/partials')
+
+// Fake middleware
+
+function fakeMiddleware() {
+  console.log('Fake middleware was called')
+}
+
+app.use((req, res, next) => {
+  fakeMiddleware()
+  next()
+})
 
 //Configure endpoints
 
@@ -29,12 +47,30 @@ app.get('/users', (req, res, next) => {
   res.render('users', { users: usersList })
 })
 
+app.get('/users/new', (req, res, next) => {
+  res.render('newUser')
+})
+
 app.get('/users/:id', (req, res, next) => {
   const foundUser = users.find(user => user.id === Number(req.params.id))
 
   res.render('userDetail', { user: foundUser })
 })
 
+app.post('/users', (req, res, next) => {
+  const { name, password } = req.body
+
+  if (name && password) {
+    res.send('Data is correct')
+  } else if (!password) {
+    res.send('You need to fill the password field')
+  } else {
+    res.send('Name is required')
+  }
+})
+
 //App port
 
-app.listen(3000, () => console.log('Listening on port 3000'))
+const port = process.env.PORT || 3000
+
+app.listen(port, () => console.log(`Listening on port ${port}`))
